@@ -90,8 +90,6 @@ static ssize_t my_write(struct file *f, const char __user *buf, size_t len, loff
 }
 long ioctl_funcs(struct file *filp,unsigned int cmd, unsigned long arg){
     int ret=0;
-    printk(KERN_INFO "Entered ioctl_funcs %d %d %d %d", cmd, (int)_IO(MAJOR(first),0),
-    (int)_IO(MAJOR(first),1), (int)_IO(MAJOR(first),2));
     if (cmd == (int)_IO(MAJOR(first),0))
     {
         printk(KERN_INFO "Mode: encode");
@@ -106,6 +104,11 @@ long ioctl_funcs(struct file *filp,unsigned int cmd, unsigned long arg){
     {
         printk(KERN_INFO "Mode: key");
         mode=2;
+    }
+    else
+    {
+        printk(KERN_INFO "Invalid command");
+        return -1;
     }
 
     return ret;
@@ -137,22 +140,18 @@ static int __init cypher_init(void) /* Constructor */
   {
     return -1;
   }
-  printk(KERN_INFO "A");
     if ((cl = class_create(THIS_MODULE, "chardrv")) == NULL)
   {
     unregister_chrdev_region(first, 1);
     return -1;
   }
-  printk(KERN_INFO "B");
     if (device_create(cl, NULL, first, NULL, "mynull") == NULL)
   {
     class_destroy(cl);
     unregister_chrdev_region(first, 1);
     return -1;
   }
-  printk(KERN_INFO "C");
     cdev_init(&c_dev, &fops);
-    printk(KERN_INFO "C2");
     if (cdev_add(&c_dev, first, 1) == -1)
   {
       printk(KERN_INFO "Aqui");
@@ -161,7 +160,6 @@ static int __init cypher_init(void) /* Constructor */
     unregister_chrdev_region(first, 1);
     return -1;
   }
-  printk(KERN_INFO "D");
   return 0;
 }
 
