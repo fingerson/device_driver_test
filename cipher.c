@@ -133,10 +133,10 @@ static struct file_operations fops ={
     .unlocked_ioctl= ioctl_funcs
 };
 
-static int __init cypher_init(void) /* Constructor */
+static int __init cipher_init(void) /* Constructor */
 {
-  printk(KERN_INFO "Cypher registered");
-  if (alloc_chrdev_region(&first, 0, 1, "Cypher") < 0)
+  printk(KERN_INFO "cipher registered");
+  if (alloc_chrdev_region(&first, 0, 1, "cipher") < 0)
   {
     return -1;
   }
@@ -163,17 +163,17 @@ static int __init cypher_init(void) /* Constructor */
   return 0;
 }
 
-static void __exit cypher_exit(void) /* Destructor */
+static void __exit cipher_exit(void) /* Destructor */
 {
   cdev_del(&c_dev);
   device_destroy(cl, first);
   class_destroy(cl);
   unregister_chrdev_region(first, 1);
-  printk(KERN_INFO "Cypher unregistered");
+  printk(KERN_INFO "cipher unregistered");
 }
 
-module_init(cypher_init);
-module_exit(cypher_exit);
+module_init(cipher_init);
+module_exit(cipher_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Henrique Finger Zimerman/Felipe Pacheco");
