@@ -10,7 +10,15 @@
 #include <stdlib.h>
 #define CHAR_LIMIT 1000000
 
-
+void driver_call(int driver_location, int major, int shift, char* buffer,int mode)
+{
+    ioctl(driver_location, _IO(major,2));
+    write(driver_location, &shift, sizeof(int));
+    ioctl(driver_location, _IO(major,mode), buffer);
+    write(driver_location, buffer, sizeof(char)*(strlen(buffer)+1));
+    buffer[0]='a';
+    read(driver_location, buffer, sizeof(char)*(strlen(buffer)+1));
+}
 
 int main(int argc, char* argv[])
 {
@@ -25,17 +33,24 @@ int main(int argc, char* argv[])
     }
     int shift;
     char buffer[CHAR_LIMIT+1];
-
-
     buffer[CHAR_LIMIT] = '\0';
-    fgets(buffer,CHAR_LIMIT,stdin);
-    scanf("%d", &shift);
-    ioctl(driver_location, _IO(major,2));
-    write(driver_location, &shift, sizeof(int));
-    ioctl(driver_location, _IO(major,0), buffer);
-    write(driver_location, buffer, sizeof(char)*(strlen(buffer)+1));
-    buffer[0]='a';
-    read(driver_location, buffer, sizeof(char)*(strlen(buffer)+1));
-    printf("%s",buffer);
+
+    printf("Bem vindo ao programa criptografico supersecreto mais poderoso do seculo 1 A.C.\n");
+    while(1)
+    {
+        int modo;
+        printf("O que deseja fazer?\n1) Criptografar uma mensagem.\n2) Descriptografar uma mensagem.\n3) Sair.\n");
+        scanf("%d", &modo);
+        char tmpchar = getchar();
+        while (tmpchar != '\n' && tmpchar != EOF) tmpchar = getchar();
+        if (modo < 1 || modo > 2) break;
+        printf("Digite a mensagem:\n");
+        fgets(buffer,CHAR_LIMIT,stdin);
+        printf("Digite a chave:\n");
+        scanf("%d", &shift);
+        driver_call(driver_location,major,shift,buffer, modo-1);
+        printf("Sua mensagem: %s\n\n",buffer);
+    }
+    printf("Obrigado por utilizar o programa criptografico supersecreto mais poderoso do seculo 1 A.C.\n");
     return 0;
 }

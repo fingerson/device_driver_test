@@ -1,6 +1,8 @@
 #!/bin/sh
 mode="664"
 
+rmmod ./cipher.ko
+
 make
 
 insmod  ./cipher.ko || exit 1
